@@ -12,9 +12,10 @@ CLOCK = pg.time.Clock()
 
 X, Y = 1700, 990
 
-ORIG_X, ORIG_Y = 500, 500
+ORIG_X, ORIG_Y = 600, 600
 GRAVITY = 0.01
 BACKGROUND = pg.image.load('bg.png')
+VELOCITY = 0.004
 
 def hex2rgb(hexstr: str) -> tuple:
     """convert hex code to RGB tuple."""
@@ -40,17 +41,27 @@ def run(display: pg.Surface) -> None:
     surf.fill(hex2rgb(GREEN))
 
     start = (ORIG_X, ORIG_Y)
-    target = (600, 600)
-    voy = start[1] - target[1]
-    vox = start[0] - target[0]
+    target = (800, 400)
+
+    display.blit(surf, target)
+    
+    triangle_a = start[1] - target[1]
+    triangle_o = start[0] - target[0]
     
     
     x = ORIG_X
     y = ORIG_Y
     time = 0
 
-    θ = math.tanh(voy / vox)
-    print(θ)
+    angle = math.atan(triangle_o / triangle_a)
+    # trianlge_h = triangle_a / math.cos(angle)
+    print(angle)
+
+    vox = VELOCITY * math.cos(angle)
+    voy = VELOCITY * math.sin(angle)
+    
+    
+    print(angle)
     
     while True:
         for event in pg.event.get():
@@ -61,7 +72,7 @@ def run(display: pg.Surface) -> None:
         time += 1
         
         x = ORIG_X + (vox * ORIG_X * time)
-        y = ORIG_Y - (voy * ORIG_Y * time) + (θ * GRAVITY) * time ** 2
+        y = ORIG_Y - (voy * ORIG_Y * time) + (angle * GRAVITY) * time ** 2
 
         print(x, y)
 
